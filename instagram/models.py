@@ -12,6 +12,15 @@ class ApiModel(object):
     def __repr__(self):
         return unicode(self).encode('utf8')
 
+class Video(ApiModel):
+
+    def __init__(self, url, width, height):
+       self.url = url
+       self.height = height
+       self.width = width
+
+    def __unicode__(self):
+        return "Video: %s" % self.url
 
 class Image(ApiModel):
 
@@ -45,6 +54,14 @@ class Media(ApiModel):
         new_media.images = {}
         for version, version_info in entry['images'].iteritems():
             new_media.images[version] = Image.object_from_dictionary(version_info)
+            
+        #add the videos
+        if "videos" in entry:
+            new_media.videos = {}
+            for version, version_info in entry['videos'].iteritems():
+                new_media.videos[version] = Video.object_from_dictionary(version_info)
+        #add the type
+        new_media.type = entry.get('type')
 
         if 'user_has_liked' in entry:
             new_media.user_has_liked = entry['user_has_liked']
